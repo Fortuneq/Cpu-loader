@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cpu-loader-mock
+  namespace: {{ .Values.namespace}}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: cpu-loader-mock
+  template:
+    metadata:
+      labels:
+        app: cpu-loader-mock
+    spec:
+      restartPolicy: Always
+      serviceAccountName: cpu-loader-mock
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        runAsNonRoot: false
+        {{- if eq .Values.runAs "k8s" }}
+        fsGroup: {{.Values.fsGroup }}
+        {{ end }}
+      containers:
+        - resources:
+             {{ toYaml .Values.resources | nindent 12 }}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          image: >-
+            {{.Values.registry}}/{{ .Values.image}}:{{.Values.tag}}
+          name: cpu-loader-mock
+      dnsPolicy: ClusterFirst

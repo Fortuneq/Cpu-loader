@@ -1,0 +1,14 @@
+replicaCount: 1
+runAs: "k8s"
+fsGroup: 1001050000
+resources:
+  limits: { "cpu": "200m", "memory": "200Mi" }
+  requests: { "cpu": "200m", "memory": "200Mi" }
+registry:
+image:
+tag:
+imagePullPolicy: Always
+namespace: ausc-victim
+scaleType: utilization
+utilizationType: cpu
+target: cpu-loader-mock
